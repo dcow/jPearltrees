@@ -1,12 +1,13 @@
 # jPearltrees Java Library #
 
 Author: David Cowden
+
 Date:   03 July, 2012
 
 ## Purpose ##
 
 jPearltrees is a Java library for manipulating the _RDF/XML_ data
-exported from [Pearltrees](http://www.pearltrees.com)
+exported from [Pearltrees](http://www.pearltrees.com).
 
 _Pearltrees_ is an individualy managed data-curation system with
 support for teams and collaboration.  Pearltrees lets you
@@ -27,13 +28,15 @@ is backed by an Apache Jena RDF _Model_ class.
 
 Beyond setup, usage is simple:
 
+```java
     // Construct a Pearltree
     Pearltree pt = new Pearltree("fileNameOrURI");
  
     // Print a pretty version..
     pt.writePrealTree(System.out);
+```
 
-
+<pre>
 > dcow
 >	MobileDevices_Tablets_iPad/Android_Social
 >		* title : The #1 Social Networking App Isn't Facebook, It's Voxer
@@ -49,24 +52,25 @@ Beyond setup, usage is simple:
 >			* identifier : http://www.wired.com/gadgetlab/2012/05/how-virgin...
 >			* inTreeSinceDate : 2012-06-02T22:08:40
 >            ...
+</pre>
 
+```java
+// Write tree structure to file system..
+pt.writeToFileSystem("absoluteOrRelativePath");
 
-    // Write tree structure to file system..
-    pt.writeToFileSystem("absoluteOrRelativePath");
+// Print a subtree..
+RootPearl root = pt.getRoot()
+Pearls children = root.getChildren();
+for (Pearl child : children) {
+  	Pearltree.printPearl(System.out, child);
 
-    // Print a subtree..
-    RootPearl root = pt.getRoot()
-    Pearls children = root.getChildren();
-    for (Pearl child : children) {
-    	Pearltree.printPearl(System.out, child);
-
-    	// Access Pearl data
-        String name = child.getName();
-        String url  = child.getURL();
-        String date = child.getDateInserted();
-        ...
-    }
-
+   	// Access Pearl data
+    String name = child.getName();
+    String url  = child.getURL();
+    String date = child.getDateInserted();
+    ...
+}
+```
     
 -------------------
 
