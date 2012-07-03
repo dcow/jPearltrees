@@ -1,11 +1,11 @@
-# jPearltrees Java Library
-==========================
+jPearltrees Java Library
+========================
 
 Author: David Cowden
 Date:   03 July, 2012
 
-## Purpose
-----------
+Purpose
+-------
 
 jPearltrees is a Java library for manipulating the _RDF/XML_ data
 exported from Pearltrees : http://www.pearltrees.com
@@ -19,8 +19,8 @@ jPearltrees adapts the _RDF/XML_ structure into a natural tree
 structure for easier human visualization and comprehension.
 
 
-## Usage
---------
+Usage
+-----
 
 jPearltrees is still in development.  To use it right now, you
 need the Jena 2.7.2 libraries on your classpath.  jPearltrees
@@ -52,8 +52,8 @@ Beyond setup, usage is simple:
 >            ...
 
 
-	// Write tree structure to file system..
-	pt.writeToFileSystem("absoluteOrRelativePath");
+    // Write tree structure to file system..
+    pt.writeToFileSystem("absoluteOrRelativePath");
 
     // Print a subtree..
     RootPearl root = pt.getRoot()
@@ -68,7 +68,6 @@ Beyond setup, usage is simple:
         ...
     }
 
-    
--------------------
 
-## More coming.. ##
+More coming..
+-------------
