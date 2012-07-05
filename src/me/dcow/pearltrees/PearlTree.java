@@ -7,7 +7,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  * 
- * @author David
+ * @author David Cowden
  *
  */
 public class PearlTree {
@@ -26,11 +26,14 @@ public class PearlTree {
 		// Store the root of the tree..
 		ptRoot = new RootPearl(rootNode);
 		
+		// Create an ArrayList big enough for the child Pearls..
 		ptPearls = new ArrayList<Pearl>(ptRoot.getRightPos()/2);
+		ptPearls.add(ptRoot.getLeftPos(), ptRoot);
 		
-		// Get the children..
+		// Get the child Pearls..
 		PearlIterator pit = ptRoot.listChildPearls();
 		
+		// Order the Pearls properly in the list.
 		Pearl p;
 		while (pit.hasNext()) {
 			p = pit.next();
@@ -39,12 +42,27 @@ public class PearlTree {
 		
 	}
 	
-	public PearlIterator listSubPearls() {
-		return new PearlItrArray(ptPearls);
-	}
-	
 	protected PearlTree(RDFNode rootNode) {
 		this(rootNode.asResource());
+	}
+	
+	
+	/**
+	 * List the Pearls in this PearlTree.  The RootPearl is the
+	 * first pearl.
+	 * @return PearlIterator over the Pearls in this PearlTree
+	 */
+	public PearlIterator listTreePearls() {
+		return new PearlItrArray(ptPearls.listIterator(1)); 
+	}
+	
+	/**
+	 * List the subPearls of the rootPearl in their order specified
+	 * by the Pearltrees export.
+	 * @return PearlIterator
+	 */
+	public PearlIterator listSubPearls() {
+		return new PearlItrArray(ptPearls.listIterator(2));
 	}
 	
 }

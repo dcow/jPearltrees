@@ -1,16 +1,21 @@
 package me.dcow.pearltrees;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 public class PearlItrArray implements PearlIterator{
 
 	Iterator<Pearl> it;
 	
-	PearlItrArray(ArrayList<Pearl> p) {
-		it = p.iterator();
+	PearlItrArray(Iterator<Pearl> pit) {
+		it = pit;
 	}
 	
+	PearlItrArray(ListIterator<Pearl> plt) {
+		it = plt;
+	}
+	
+
 	@Override 
 	public boolean hasNext() {
 		return it.hasNext();
