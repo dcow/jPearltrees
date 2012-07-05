@@ -189,4 +189,32 @@ public class PearlTree {
 	public void writeRAW() {
 		writeRAW(System.out);
 	}
+	
+	
+	@SuppressWarnings("unused")
+	private class DefaultPearlHandler implements PearlHandler {
+
+		public void onRootPearl(Pearl rootPearl) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void onPagePearl(Pearl pagePearl) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void onRefPearl(Pearl refPearl) {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		public void onAliasPearl(Pearl aliasPearl) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		
+	}
 }
