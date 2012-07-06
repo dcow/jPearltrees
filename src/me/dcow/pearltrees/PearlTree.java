@@ -1,8 +1,9 @@
 package me.dcow.pearltrees;
 
-import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
@@ -12,32 +13,29 @@ import com.hp.hpl.jena.rdf.model.Resource;
  */
 public class PearlTree {
 
-	private RootPearl			ptRoot;
-	private ArrayList<Pearl> 	ptPearls;
+	private PriorityQueue<Pearl> ptPearls;
 	
 	/**
 	 * Construct a PearlTree for the PearlTree rooted at rootNode.
 	 * @param rootNode
 	 */
-	protected PearlTree(Resource rootNode) {
-		// Check that rootNode refers to a pt:RootNode
+	protected PearlTree(Resource treeResource) {
+		// Check that treeResource refers to a pt:Tree
 		// TODO: check?
 		
-		// Store the root of the tree..
-		ptRoot = new RootPearl(rootNode);
+		// Find the Pearls in the tree..
+		ResIterator rit = treeResource.getModel()
+						.listResourcesWithProperty(PT.parentTree, treeResource);
 		
-		// Create an ArrayList big enough for the child Pearls..
-		ptPearls = new ArrayList<Pearl>(ptRoot.getRightPos()/2);
-		ptPearls.add(ptRoot.getLeftPos(), ptRoot);
+		// Create an ArrayList for the sub-pearls..
+		//// TODO: figure out a way to get the size of the rit and use an ArrayList
+		////       instead.  Last attempt failed...
+		ptPearls = new PriorityQueue<Pearl>();
 		
-		// Get the child Pearls..
-		PearlIterator pit = ptRoot.listChildPearls();
-		
-		// Order the Pearls properly in the list.
-		Pearl p;
-		while (pit.hasNext()) {
-			p = pit.next();
-			ptPearls.add(p.getLeftPos(), p);
+		Pearl pearl;
+		while(rit.hasNext()) {
+			pearl = Pearltrees.Clam.makePearl(rit.nextResource());
+			ptPearls.add(pearl);
 		}
 		
 	}
@@ -46,6 +44,13 @@ public class PearlTree {
 		this(rootNode.asResource());
 	}
 	
+	/**
+	 * Return the RootPearl which represents the root of the PearlTree.
+	 * @return RootPearl of the PearlTree
+	 */
+	public RootPearl getRootPearl() {
+		return (RootPearl) ptPearls.peek();
+	}
 	
 	/**
 	 * List the Pearls in this PearlTree.  The RootPearl is the
@@ -53,16 +58,7 @@ public class PearlTree {
 	 * @return PearlIterator over the Pearls in this PearlTree
 	 */
 	public PearlIterator listTreePearls() {
-		return new PearlItrArray(ptPearls.listIterator(1)); 
-	}
-	
-	/**
-	 * List the subPearls of the rootPearl in their order specified
-	 * by the Pearltrees export.
-	 * @return PearlIterator
-	 */
-	public PearlIterator listSubPearls() {
-		return new PearlItrArray(ptPearls.listIterator(2));
+		return new PearlItrArray(ptPearls.iterator()); 
 	}
 	
 }

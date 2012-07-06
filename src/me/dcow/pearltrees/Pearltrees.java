@@ -9,6 +9,7 @@ import java.util.Map;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
@@ -62,18 +63,23 @@ public class Pearltrees {
 	 * OutputStream out.
 	 * @param out Stream to write to.
 	 */
-	public static void listNameSpaces(OutputStream out, Pearl p) {
-		PrintStream outps = new PrintStream(out);
-		// Get the map so we can print the values AND the keys.
+	public static void listNameSpaces(OutputStream out, PearlTree pt) {
+		Pearl p = pt.getRootPearl();
+		// Check to make sure the PearlTree has a root..
+		if (p == null)
+			return;
 		Model m = p.toRDF().getModel();
+		// Get the map so we can print the values AND the keys.
 		Map<String, String> preMap = m.getNsPrefixMap();
 		Iterator<String> it = preMap.keySet().iterator();
 		String key;
+		PrintStream outps = new PrintStream(out);
 		while (it.hasNext()) {
 			key = it.next();
 			outps.println(String.format("%10s : %s", key, preMap.get(key)));
 		}
 	}
+	
 	
 	/**
 	 * Write out the entire Pearltree rooted at rootNode in its directory like structure.
@@ -182,6 +188,29 @@ public class Pearltrees {
 	}
 	
 	
+
+	/* * * 
+	 * Clams make Pearls, right?..
+	 */
+	protected static class Clam {
+		protected static Pearl makePearl(RDFNode resNode) {
+			Pearl p = null;
+			
+			// Construct the proper concrete type of Pearl..
+			if (resNode != null) {
+				Resource r = resNode.asResource();
+				if      (r.hasProperty(RDF.type, PT.RootPearl))
+					p = new RootPearl(resNode);
+				else if (r.hasProperty(RDF.type, PT.PagePearl)) 
+					p = new PagePearl(resNode);
+				else if (r.hasProperty(RDF.type, PT.RefPearl))
+					p = new RefPearl(resNode);
+				else if (r.hasProperty(RDF.type, PT.AliasPearl))
+					p = new AliasPearl(resNode);
+			}
+			return p;
+		}
+	}
 	
 	
 	@SuppressWarnings("unused")

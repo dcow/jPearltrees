@@ -10,4 +10,14 @@ abstract class PTNode {
 	protected PTNode(RDFNode pearlRDFNode) {
 		pData = pearlRDFNode.asResource();
 	}
+	
+	@Override
+	public String toString() {
+		return pData.toString();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return pData.equals(obj);
+	}
 }
