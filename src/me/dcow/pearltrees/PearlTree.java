@@ -1,5 +1,7 @@
 package me.dcow.pearltrees;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -61,4 +63,13 @@ public class PearlTree {
 		return new PearlItrArray(ptPearls.iterator()); 
 	}
 	
+	/**
+	 * Get the underlying List of pearls in this PearlTree.  Pearls
+	 * will be returned in the order, specified by the nested
+	 * set values, of each pearl.
+	 * @return
+	 */
+	public List<Pearl> getTreePearls() {
+		return new ArrayList<Pearl>(ptPearls);
+	}
 }
