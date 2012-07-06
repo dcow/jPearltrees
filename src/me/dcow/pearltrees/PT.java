@@ -14,41 +14,54 @@ public class PT {
 	// reading a Pearltrees RDF/XML file..
 	public static final String PearlTreeNS 	= "http://www.pearltrees.com/rdf/0.1/#";
 	
-	//// Strings:
-	// Primary Classes..
+	////// Strings:
+	//// Primary Classes..
 	public 	static 	final 	String 	sTree		= "Tree";
 	public 	static 	final 	String 	sPearl		= "Pearl";
 	public 	static 	final 	String 	sPagePearl	= "PagePearl";
 	
-	// Secondary Classes..
+	//// Secondary Classes..
 	public 	static 	final 	String 	sAliasPearl	= "AliasPearl";
 	public 	static 	final 	String 	sRefPearl	= "RefPearl";
 	public 	static 	final 	String 	sRootPearl	= "RootPearl";
 	public 	static 	final 	String 	sNote		= "Note";
 	
-	// Class Members..
+	//// Class Members..
+	// Pearl
 	public  static  final	String	sInTreeSince	= "inTreeSinceDate";
 	public  static  final 	String  sParentTree 	= "parentTree";
 	public	static	final	String 	sLeftPos		= "leftPos";
 	public	static	final	String 	sRightPos		= "rightPos";
 	
-	//// Properties:
-	// Primary Classes..
+	//// Note
+	public	static	final	String	sParentPearl	= "parentPearl";
+	public	static	final	String	sNoteText		= "noteText";
+
+	
+	
+	////// Properties:
+	//// Primary Classes..
 	public 	static 		Property	Tree 		= null;
 	public 	static 		Property	Pearl 		= null;
 	public 	static 		Property	PagePearl 	= null;
 	
-	// Secondary Classes..
+	//// Secondary Classes..
 	public 	static 		Property	AliasPearl	= null;
 	public 	static 		Property	RefPearl	= null;
 	public 	static 		Property	RootPearl	= null;
 	public 	static 		Property	Note 		= null;
 
-	// Class Members..
+	//// Class Members..
+	// Pearl
 	public  static		Property	inTreeSince = null;
 	public  static		Property	parentTree 	= null;
 	public  static		Property	leftPos 	= null;
 	public  static		Property	rightPos 	= null;
+	
+	// Note
+	public	static		Property	parentPearl	= null;
+	public	static		Property	noteText	= null;
+
 	
 	static {
 		try {
@@ -61,8 +74,10 @@ public class PT {
 			Note		= new PropertyImpl(PearlTreeNS, sNote);
 			inTreeSince = new PropertyImpl(PearlTreeNS, sInTreeSince);
 			parentTree	= new PropertyImpl(PearlTreeNS, sParentTree);
+			parentPearl = new PropertyImpl(PearlTreeNS, sParentPearl);
 			leftPos		= new PropertyImpl(PearlTreeNS, sLeftPos);
 			rightPos	= new PropertyImpl(PearlTreeNS, sRightPos);
+			noteText	= new PropertyImpl(PearlTreeNS, sNoteText);
 			
 		} finally {}
 	}

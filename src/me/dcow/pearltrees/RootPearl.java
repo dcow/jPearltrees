@@ -4,11 +4,11 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 
 public class RootPearl extends Pearl {
 	
-	public RootPearl(RDFNode node) {
-		super(node);
+	protected RootPearl(RDFNode ptNode) {
+		super(ptNode);
 	}
 	
 	public PearlIterator listChildPearls() {
-		return new PearlItrStmt(rNode.getModel().listStatements(null, PT.parentTree, rNode));
+		return new PearlItrStmt(pData.getModel().listStatements(null, PT.parentTree, pData));
 	}
 }

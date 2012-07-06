@@ -2,38 +2,49 @@ package me.dcow.pearltrees;
 
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.vocabulary.DC_11;
+import com.hp.hpl.jena.vocabulary.RDF;
 
-public class Pearl {
+public class Pearl extends PTNode {
 	
-	protected RDFNode rNode;
-	
-	protected Pearl(RDFNode n) {
-		rNode = n;
+	protected Pearl(RDFNode ptNode) {
+		super(ptNode);
 	}
 	
 	public RDFNode toRDF() {
-		return rNode;	
+		return pData;	
+	}
+	
+	protected String getURI() {
+		return pData.getURI();
 	}
 	
 	public String getTitle() {
-		return rNode.asResource().getProperty(DC_11.title).getString();
+		return pData.getProperty(DC_11.title).getString();
 	}
 	
 	public String getEntryDate() {
-		return rNode.asResource().getProperty(PT.inTreeSince).getString();
+		return pData.getProperty(PT.inTreeSince).getString();
 	}
 	
 	public int getLeftPos() {
-		return rNode.asResource().getProperty(PT.leftPos).getInt();
+		return pData.getProperty(PT.leftPos).getInt();
 	}
 	
 	public int getRightPos() {
-		return rNode.asResource().getProperty(PT.rightPos).getInt();
+		return pData.getProperty(PT.rightPos).getInt();
+	}
+	
+	public String getType() {
+		return pData.getProperty(RDF.type).getString();
+	}
+	
+	public NoteIterator getNotes() {
+		return new NoteItrRes(pData.getModel().listResourcesWithProperty(PT.Tree, getURI()));
 	}
 	
 	
 	@Override
 	public String toString() {
-		return rNode.toString();
+		return pData.toString();
 	}
 }
