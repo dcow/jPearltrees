@@ -9,7 +9,13 @@ import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
- * 
+ * A PearlTree is one root node and all of its child nodes, each of which
+ * is a type of Pearl.  A PearlTree is only 2 levels deep -- the root level
+ * and the child level.  However, a PearlTree can contain references to 
+ * other PearlTrees (traditionally subtrees) in the form of AliasPearls.
+ * If an AliasPearl refers to a tree defined within the RDF/XML available,
+ * it is considered a RefPearl and the referenced PearlTree can be retrieved.
+ * In this way, the entire PearlTree graph can be traversed.
  * @author David Cowden
  *
  */

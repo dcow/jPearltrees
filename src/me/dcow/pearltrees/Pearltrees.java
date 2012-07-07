@@ -18,10 +18,29 @@ import com.hp.hpl.jena.vocabulary.DC_11;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
+/**
+ * Pearltrees is an adapter class for the Jena Model in conjunction
+ * with Pearltrees data.  Pearltrees allows you to interface with the 
+ * data you export from your Pearltree in a familiar Pearltrees fashion.
+ * In other words, given Pearltrees RDF/XML, this Pearltrees
+ * implementation will construct a PearlTree that represents the data in
+ * its natural tree structure.
+ * 
+ * Given a PearlTree , all its Pearls can be visited by retrieving an iterator 
+ * over the associated Pearls.  To traverse the whole Tree rooted at the
+ * PearlTree, any time a RefPearl is encountered, the associated PearlTree can be
+ * retrieved and the structure recursively followed.
+ * 
+ * Traversal can be done by hand as mentioned, however, Pearltrees provides 
+ * an automated traversal method and an interface for implementing the callbacks  
+ * run on each visit to a Pearl.  Pearltrees also provides some other convenience 
+ * methods for traversing and working with data from a Pearltrees export.
+ * 
+ * @author David
+ *
+ */
 public class Pearltrees {
 
-
-	
 	/**
 	 * Construct a pearlTree from the specified RDF/XML InputStream source.
 	 * @param pearlTreeXML InputSteam RDF/XML source.
@@ -48,14 +67,13 @@ public class Pearltrees {
 	}
 	
 	
-	
 	/**
 	 * Create folders where rootPearls exist and files where pagePearls or
 	 * aliasPearls exist.
 	 * @param path Absolute or Relative path.
 	 */
-	public void writeToFileSystem(String path) {
-			
+	public void writeToFileSystem(String path, PearlTree pt) {
+		
 	}
 	
 	/**
