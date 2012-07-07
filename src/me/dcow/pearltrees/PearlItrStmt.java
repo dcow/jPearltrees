@@ -18,7 +18,7 @@ public class PearlItrStmt implements PearlIterator {
 
 	@Override
 	public Pearl next() {
-		return new Pearl(sit.nextStatement().getSubject());
+		return Pearltrees.Clam.makePearl(sit.nextStatement().getSubject());
 	}
 	
 

@@ -1,5 +1,7 @@
 package me.dcow.pearltrees;
 
+import me.dcow.pearltrees.Pearltrees.Clam;
+
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.vocabulary.DC_11;
 
@@ -24,7 +26,11 @@ public class Note extends PTNode {
 	}
 
 	public Pearl getParentPearl() {
-		return new Pearl(pData.getPropertyResourceValue(PT.parentPearl));
+		return Clam.makePearl(pData.getPropertyResourceValue(PT.parentPearl));
 	}	
+	
+	protected void accept(PearlHandler nh) {
+		nh.onNote(this);
+	}
 }
 

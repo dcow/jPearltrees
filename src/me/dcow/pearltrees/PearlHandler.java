@@ -2,13 +2,15 @@ package me.dcow.pearltrees;
 
 /**
  * PearlHandler is passed to the callback functions of the traversal
- * methods.
+ * methods. 
+ * 
  * @author David
  *
  */
 public interface PearlHandler {
-	public void onRootPearl (Pearl rootPearl );
-	public void onPagePearl (Pearl pagePearl );
-	public void onRefPearl  (Pearl refPearl  );
-	public void onAliasPearl(Pearl aliasPearl);
+	public void onPearl(RootPearl 	rootPearl );
+	public void onPearl(PagePearl 	pagePearl );
+	public void onPearl(AliasPearl 	aliasPearl);
+	public void onPearl(RefPearl 	refPearl  );
+	public void onNote (Note		note	  );
 }

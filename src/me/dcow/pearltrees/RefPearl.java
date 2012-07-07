@@ -32,4 +32,9 @@ public class RefPearl extends AliasPearl {
 		return new PearlTree(pData.getPropertyResourceValue(RDFS.seeAlso));
 	}
 
+	@Override
+	protected void accept(PearlHandler ph) {
+		ph.onPearl(this);
+	}
+	
 }

@@ -66,7 +66,7 @@ public class PearlTree {
 	 * @return PearlIterator over the Pearls in this PearlTree
 	 */
 	public PearlIterator listTreePearls() {
-		return new PearlItrArray(ptPearls.iterator()); 
+		return new PearlItrList(ptPearls.iterator()); 
 	}
 	
 	/**

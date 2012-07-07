@@ -3,15 +3,15 @@ package me.dcow.pearltrees;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-public class PearlItrArray implements PearlIterator{
+public class PearlItrList implements PearlIterator{
 
-	Iterator<Pearl> it;
+	Iterator<? extends Pearl> it;
 	
-	PearlItrArray(Iterator<Pearl> pit) {
+	protected PearlItrList(Iterator<Pearl> pit) {
 		it = pit;
 	}
 	
-	PearlItrArray(ListIterator<Pearl> plt) {
+	protected PearlItrList(ListIterator<Pearl> plt) {
 		it = plt;
 	}
 	

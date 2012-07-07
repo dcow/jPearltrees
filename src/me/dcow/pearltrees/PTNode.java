@@ -11,6 +11,9 @@ abstract class PTNode {
 		pData = pearlRDFNode.asResource();
 	}
 	
+	// Visitor method..
+	abstract protected void accept(PearlHandler ph);
+	
 	@Override
 	public String toString() {
 		return pData.toString();

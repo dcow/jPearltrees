@@ -4,7 +4,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.vocabulary.DC_11;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-public class Pearl extends PTNode implements Comparable<Pearl> {
+public abstract class Pearl extends PTNode implements Comparable<Pearl> {
 	
 	protected Pearl(RDFNode ptNode) {
 		super(ptNode);
@@ -41,7 +41,7 @@ public class Pearl extends PTNode implements Comparable<Pearl> {
 	public NoteIterator getNotes() {
 		return new NoteItrRes(pData.getModel().listResourcesWithProperty(PT.Tree, getURI()));
 	}
-
+	
 	@Override
 	public int compareTo(Pearl o) {
 		return getLeftPos() - o.getLeftPos();

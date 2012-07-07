@@ -45,7 +45,7 @@ public class Pearltrees {
 	 * Construct a pearlTree from the specified RDF/XML InputStream source.
 	 * @param pearlTreeXML InputSteam RDF/XML source.
 	 */
-	public static PearlTree buildPearlTree(InputStream pearlTreeXML) {
+	public static PearlTree buildPearlTrees(InputStream pearlTreeXML) {
 		// Parse RDF..
 		  // Create an empty model.
 		Model m = ModelFactory.createDefaultModel();
@@ -61,11 +61,38 @@ public class Pearltrees {
 	 * Construct a pearlTree from the RDF/XML located at filenameOrURI.
 	 * @param filenameOrURI location of the RDF/XML data.
 	 */
-	public static PearlTree buildPearlTree(String filenameOrURI) {
+	public static PearlTree buildPearlTrees(String filenameOrURI) {
 		// Open the XML RDF file..
-		return buildPearlTree(FileManager.get().open(filenameOrURI));
+		return buildPearlTrees(FileManager.get().open(filenameOrURI));
 	}
 	
+	/**
+	 * Traverse the PearlTree ph using the callbacks defined by a PearlHandler
+	 * implementation.  This traversal is an in order traversal. That is, each
+	 * rootPearl is visited then all the Page,Alias, and Ref Pearls.  If notes
+	 * are attached to a Pearl, they will be visited in a random order at the 
+	 * time that the Pearl they describe is visited.
+	 * @param pt PearlTree to traverse
+	 * @param ph PearlHandler defining callbacks for each node/pearl.
+	 */
+	public static void traversePearlTree(PearlTree pt, PearlHandler ph) {
+		for (Pearl p : pt.getTreePearls()) {
+			p.accept(ph);
+			
+			//TODO: add note fucntionality..
+		}
+	}
+	
+	/**
+	 * Traverse the PearlTree ph as in traversePearlTree and also follow 
+	 * any RefPearls recursively -- calling traversePearlTree on them.
+	 * @param pt root PearlTree to begin climbing traversal from.
+	 * @param ph PearlHandler defining callbacks for each node/pearl.
+	 */
+	public static void climbPearlTree(PearlTree pt, PearlHandler ph) {
+		
+		
+	}
 	
 	/**
 	 * Create folders where rootPearls exist and files where pagePearls or
@@ -81,7 +108,7 @@ public class Pearltrees {
 	 * OutputStream out.
 	 * @param out Stream to write to.
 	 */
-	public static void listNameSpaces(OutputStream out, PearlTree pt) {
+	protected static void listNameSpaces(OutputStream out, PearlTree pt) {
 		Pearl p = pt.getRootPearl();
 		// Check to make sure the PearlTree has a root..
 		if (p == null)
@@ -230,30 +257,30 @@ public class Pearltrees {
 		}
 	}
 	
+
+	/**
+	 * The DefaultHandler doesn't do anything for any of the Pearls.
+	 * You it's provided so you can subclass it and only override
+	 * methods you want to use.
+	 * @return
+	 */
+	public static PearlHandler getDefaultPearlHandler() {
+		return new DefaultPearlHandler();
+	}
 	
-	@SuppressWarnings("unused")
-	private class DefaultPearlHandler implements PearlHandler {
+	/**
+	 * DefaultHandler doesn't do anything.  
+	 * @author David
+	 *
+	 */
+	public static class DefaultPearlHandler implements PearlHandler {
 		
-		public void onRootPearl(Pearl rootPearl) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void onPearl(RootPearl rootPearl) {}
+		public void onPearl(PagePearl pagePearl) {}
+		public void onPearl(RefPearl refPearl) {}
+		public void onPearl(AliasPearl aliasPearl) {}
 
-		public void onPagePearl(Pearl pagePearl) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		public void onRefPearl(Pearl refPearl) {
-			// TODO Auto-generated method stub
-			
-		}
-
-
-		public void onAliasPearl(Pearl aliasPearl) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void onNote(Note note) {}
 		
 		
 	}
