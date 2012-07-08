@@ -1,8 +1,12 @@
 package me.dcow.pearltrees;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -78,8 +82,6 @@ public class Pearltrees {
 	public static void traversePearlTree(PearlTree pt, PearlHandler ph) {
 		for (Pearl p : pt.getTreePearls()) {
 			p.accept(ph);
-			
-			//TODO: add note fucntionality..
 		}
 	}
 	
@@ -90,7 +92,9 @@ public class Pearltrees {
 	 * @param ph PearlHandler defining callbacks for each node/pearl.
 	 */
 	public static void climbPearlTree(PearlTree pt, PearlHandler ph) {
-		
+		for (Pearl pearl : pt.getTreePearls()) {
+			pearl.accept(ph);
+		}
 		
 	}
 	
@@ -99,8 +103,10 @@ public class Pearltrees {
 	 * aliasPearls exist.
 	 * @param path Absolute or Relative path.
 	 */
-	public void writeToFileSystem(String path, PearlTree pt) {
-		
+	public void writeToFileSystem(String path, PearlTree pt, boolean recursive) {
+		for (Pearl pearl : pt.getTreePearls()) {
+			pearl.accept(getFileSystemPearlHandler(path, recursive));
+		}
 	}
 	
 	/**
@@ -163,7 +169,7 @@ public class Pearltrees {
 				if ((newRoot = childPearl.getProperty(RDFS.seeAlso)) != null ) {
 					// It is a reference or alias Pearl.
 					// Follow reference Pearls recursively..
-					_printTree(outps, new Pearl(newRoot.getObject()), 
+					_printTree(outps, Clam.makePearl(newRoot.getObject()), 
 							fieldDelimiter + levelPrefix, fieldDelimiter, entryMarker, expanded);
 				}
 			} else {
@@ -281,7 +287,125 @@ public class Pearltrees {
 		public void onPearl(AliasPearl aliasPearl) {}
 
 		public void onNote(Note note) {}
-		
-		
 	}
-}
+	
+	
+	
+	public static FileSystemPearlHandler getFileSystemPearlHandler(String path, boolean recursive) {
+		return recursive ? new RecursiveFileSystemPearlHandler(path) : new FileSystemPearlHandler(path);
+	}
+	
+	public static FileSystemPearlHandler getFileSystemPearlHandler(boolean recursive) {
+		return getFileSystemPearlHandler(new String(), recursive);
+	}
+	
+	/**
+	 * TODO: Document..
+	 * @author David
+	 *
+	 */
+	public static class FileSystemPearlHandler implements PearlHandler {
+
+		private File currentDir;
+		
+		public FileSystemPearlHandler() {
+			this(new String());
+		}
+		public FileSystemPearlHandler(String outputDirectory) {
+			currentDir = new File(outputDirectory);
+			currentDir.mkdirs();
+			
+		}
+		
+		@Override
+		public void onPearl(RootPearl rootPearl) {
+			String dirName = rootPearl.getTitle();
+			File dir = new File(currentDir, dirName);
+			dir.mkdir();
+			currentDir = dir;
+		}
+
+		@Override
+		public void onPearl(PagePearl pagePearl) {
+			String fileName = pagePearl.getTitle();
+			File pFile = new File(currentDir, fileName);
+			OutputStream o = null;
+			try {
+				o = new FileOutputStream(pFile);
+				o.write(pagePearl.getPageURLstr().getBytes());
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}
+
+		@Override
+		public void onPearl(AliasPearl aliasPearl) {
+			String fileName = aliasPearl.getTitle();
+			File pFile = new File(currentDir, fileName);
+			OutputStream o = null;
+			try {
+				o = new FileOutputStream(pFile);
+				o.write(aliasPearl.getPearlURI().getBytes());
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+			
+		}
+
+		@Override
+		public void onPearl(RefPearl refPearl) {
+			String fileName = refPearl.getTitle();
+			File pFile = new File(currentDir, fileName);
+			OutputStream o = null;
+			try {
+				o = new FileOutputStream(pFile);
+				o.write(refPearl.getPearlURI().getBytes());
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+			
+		}
+
+		@Override
+		public void onNote(Note note) {
+			PrintWriter p;
+			try {
+				p = new PrintWriter(new FileOutputStream(note.getParentPearl().toString(), true));
+				p.println();
+				p.println(note.getCreator());
+				p.println(note.getDate());
+				p.println(note.getText());
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}
+	}// FileSystemPearlHandler
+	
+	/**
+	 * TODO: Document..
+	 * @author David
+	 *
+	 */
+	public static class RecursiveFileSystemPearlHandler extends FileSystemPearlHandler {
+		
+		public RecursiveFileSystemPearlHandler(String outputDirectory) {
+			super(outputDirectory);
+		}
+		
+		public RecursiveFileSystemPearlHandler() {
+			super(new String());
+		}
+		
+		@Override
+		public void onPearl(RefPearl refPearl) {
+			RecursiveFileSystemPearlHandler rfsph = 
+					new RecursiveFileSystemPearlHandler(
+							super.currentDir.getParentFile().getPath());
+			
+			for (Pearl p : refPearl.getPearlTree().getTreePearls()) {
+				p.accept(rfsph);
+			}	
+		}	
+	} // RecursiveFilesystemPearlHandler
+	
+}// Pearltrees
