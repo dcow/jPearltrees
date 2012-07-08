@@ -98,12 +98,18 @@ public class Pearltrees {
 		
 	}
 	
+	public static void writeTextToStream(OutputStream out, PearlTree pt, boolean recursive) {
+		for (Pearl pearl : pt.getTreePearls()) {
+			pearl.accept(getTextPearlHandler(out, recursive));
+		}
+	}
+	
 	/**
 	 * Create folders where rootPearls exist and files where pagePearls or
 	 * aliasPearls exist.
 	 * @param path Absolute or Relative path.
 	 */
-	public void writeToFileSystem(String path, PearlTree pt, boolean recursive) {
+	public static void writeToFileSystem(String path, PearlTree pt, boolean recursive) {
 		for (Pearl pearl : pt.getTreePearls()) {
 			pearl.accept(getFileSystemPearlHandler(path, recursive));
 		}
@@ -289,6 +295,106 @@ public class Pearltrees {
 		public void onNote(Note note) {}
 	}
 	
+	
+	public static TextPearlHandler getTextPearlHandler(OutputStream out, boolean recursive) {
+		PrintStream outps = new PrintStream(out);
+		return recursive ? new RecursiveTextPearlHandler(outps) : new TextPearlHandler(outps);
+	}
+	
+	public static class TextPearlHandler extends DefaultPearlHandler {
+		
+		private PrintStream outps;
+		private String prefix		= "";
+		private String prefixInc	= "\t";
+		private String pearlPrefix 	= "*";
+		private String rootPrefix	= "#";
+		private String aliasPrefix	= "@";
+		private String refPrefix	= ">";
+		
+		TextPearlHandler(PrintStream outputStream) {
+			this.outps = outputStream;
+		}
+		
+		TextPearlHandler(PrintStream outputStream, String prefix) {
+			this(outputStream);
+			this.prefix = prefix;
+
+		}
+		
+		TextPearlHandler(PrintStream outputStream, String prefix, 
+				String pearlPrefix, String rootPrefix, String aliasPrefix, String refPrefix) {
+			this(outputStream, prefix);
+			this.pearlPrefix 	= pearlPrefix;
+			this.rootPrefix 	= rootPrefix;
+			this.aliasPrefix	= aliasPrefix;
+			this.refPrefix 		= refPrefix;
+			
+		}
+		
+		TextPearlHandler(PrintStream outputStream, String prefix, String prefixInc,
+				String pearlPrefix, String rootPrefix, String aliasPrefix, String refPrefix) {
+			this(outputStream, prefix, pearlPrefix, rootPrefix, aliasPrefix, refPrefix);
+			this.prefixInc 	= prefixInc; 
+			
+		}
+		
+		
+		@Override
+		public void onPearl(RootPearl rootPearl) {
+			outps.println(prefix + rootPrefix + " " + rootPearl.getTitle());
+		}
+		
+		@Override
+		public void onPearl(PagePearl pagePearl) {
+			outps.println(prefix + prefixInc + pearlPrefix + " " + pagePearl.getTitle());
+		}
+		
+		@Override
+		public void onPearl(AliasPearl aliasPearl) {
+			outps.println(prefix + prefixInc + aliasPrefix + " " + aliasPearl.getTitle());
+		}
+		
+		@Override
+		public void onPearl(RefPearl refPearl) {
+			outps.println(prefix + prefixInc + refPrefix + " " + refPearl.getTitle());
+		}
+		
+		// TODO: add notes..
+	}
+	
+	public static class RecursiveTextPearlHandler extends TextPearlHandler {
+		
+
+		RecursiveTextPearlHandler(PrintStream outputStream) {
+			super(outputStream);
+		}
+		
+		RecursiveTextPearlHandler(PrintStream outputStream, String prefix) {
+			super(outputStream, prefix);
+
+		}
+		
+		RecursiveTextPearlHandler(PrintStream outputStream, String prefix, 
+				String pearlPrefix, String rootPrefix, String aliasPrefix, String refPrefix) {
+			super(outputStream, prefix, pearlPrefix, rootPrefix, aliasPrefix, refPrefix);
+			
+		}
+		
+		RecursiveTextPearlHandler(PrintStream outputStream, String prefix, String prefixInc,
+				String pearlPrefix, String rootPrefix, String aliasPrefix, String refPrefix) {
+			super(outputStream, prefix, prefixInc, pearlPrefix, rootPrefix, aliasPrefix, refPrefix);
+			
+		}
+		
+		@Override
+		public void onPearl(RefPearl refPearl) {
+			for (Pearl p : refPearl.getPearlTree().getTreePearls()) {
+				p.accept(new RecursiveTextPearlHandler(super.outps, 
+						super.prefix + super.prefixInc, super.prefixInc, super.pearlPrefix,
+						super.rootPrefix, super.aliasPrefix, super.refPrefix));
+			}
+		}
+	}  // RecursiveTextPearlHandler
 	
 	
 	public static FileSystemPearlHandler getFileSystemPearlHandler(String path, boolean recursive) {
