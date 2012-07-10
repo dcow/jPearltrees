@@ -29,8 +29,5 @@ public class Note extends PTNode {
 		return Clam.makePearl(pData.getPropertyResourceValue(PT.parentPearl));
 	}	
 	
-	protected void accept(PearlHandler nh) {
-		nh.onNote(this);
-	}
 }
 

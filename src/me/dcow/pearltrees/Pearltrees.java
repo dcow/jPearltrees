@@ -1,12 +1,8 @@
 package me.dcow.pearltrees;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -15,12 +11,8 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.DC_11;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
  * Pearltrees is an adapter class for the Jena Model in conjunction
@@ -44,7 +36,9 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  *
  */
 public class Pearltrees {
-
+	
+	protected Pearltrees() {}
+	
 	/**
 	 * Construct a pearlTree from the specified RDF/XML InputStream source.
 	 * @param pearlTreeXML InputSteam RDF/XML source.
@@ -68,6 +62,31 @@ public class Pearltrees {
 	public static PearlTree buildPearlTrees(String filenameOrURI) {
 		// Open the XML RDF file..
 		return buildPearlTrees(FileManager.get().open(filenameOrURI));
+	}
+	
+	/* * * 
+	 * Clams make Pearls, right?..
+	 * Clam is a factory for Pearls.  Given the RDF resource of a Pearl,
+	 * the makePearl method will return a Pearl of the appropriate type.
+	 */
+	protected static class Clam {
+		protected static Pearl makePearl(RDFNode resNode) {
+			Pearl p = null;
+			
+			// Construct the proper concrete type of Pearl..
+			if (resNode != null) {
+				Resource r = resNode.asResource();
+				if      (r.hasProperty(RDF.type, PT.RootPearl))
+					p = new RootPearl(resNode);
+				else if (r.hasProperty(RDF.type, PT.PagePearl)) 
+					p = new PagePearl(resNode);
+				else if (r.hasProperty(RDF.type, PT.RefPearl))
+					p = new RefPearl(resNode);
+				else if (r.hasProperty(RDF.type, PT.AliasPearl))
+					p = new AliasPearl(resNode);
+			}
+			return p;
+		}
 	}
 	
 	/**
@@ -94,178 +113,8 @@ public class Pearltrees {
 	public static void climbPearlTree(PearlTree pt, PearlHandler ph) {
 		for (Pearl pearl : pt.getTreePearls()) {
 			pearl.accept(ph);
-		}
-		
-	}
-	
-	public static void writeTextToStream(OutputStream out, PearlTree pt, boolean recursive) {
-		for (Pearl pearl : pt.getTreePearls()) {
-			pearl.accept(getTextPearlHandler(out, recursive));
-		}
-	}
-	
-	/**
-	 * Create folders where rootPearls exist and files where pagePearls or
-	 * aliasPearls exist.
-	 * @param path Absolute or Relative path.
-	 */
-	public static void writeToFileSystem(String path, PearlTree pt, boolean recursive) {
-		for (Pearl pearl : pt.getTreePearls()) {
-			pearl.accept(getFileSystemPearlHandler(path, recursive));
-		}
-	}
-	
-	/**
-	 * Print the namespaces used in the RDF/XML description of the pearlTree to
-	 * OutputStream out.
-	 * @param out Stream to write to.
-	 */
-	protected static void listNameSpaces(OutputStream out, PearlTree pt) {
-		Pearl p = pt.getRootPearl();
-		// Check to make sure the PearlTree has a root..
-		if (p == null)
-			return;
-		Model m = p.toRDF().getModel();
-		// Get the map so we can print the values AND the keys.
-		Map<String, String> preMap = m.getNsPrefixMap();
-		Iterator<String> it = preMap.keySet().iterator();
-		String key;
-		PrintStream outps = new PrintStream(out);
-		while (it.hasNext()) {
-			key = it.next();
-			outps.println(String.format("%10s : %s", key, preMap.get(key)));
-		}
-	}
-	
-	
-	/**
-	 * Write out the entire Pearltree rooted at rootNode in its directory like structure.
-	 * The Pearltree is written with the name of each pearl on a new line.  The name is preceeded
-	 * by its depth number of instances of fieldDelimiter.  Properties of each Pearl are then 
-	 * printed after a fieldDelimiter after the name and are separated by more fieldDelimiters.
-	 * @param out OutputStream to write the Pearltree to.
-	 * @param rootNode 
-	 * @param fieldDelimiter String to place between fields.
-	 */
-	public static void printTree(OutputStream out, Pearl rootNode, String fieldDelimiter) {
-		PrintStream outps = new PrintStream(out);
-		if (rootNode != null)
-			_printTree(outps, rootNode, "", fieldDelimiter, "", false);
-	}
-	
-	// Recursive helper procedure for the printTree function..
-	private static void _printTree(PrintStream outps, Pearl rootNode, 
-							String levelPrefix, String fieldDelimiter, String entryMarker, boolean expanded) {
-		// Print the rootPearl out..
-		Statement rootNodeTitle = rootNode.toRDF().asResource().getProperty(DC_11.title);
-		outps.println(levelPrefix + ((rootNodeTitle != null) ? 
-				rootNodeTitle.getObject().toString() : ""));
-		
-		// Iterate over all the Pearls that are a child of the RootPearl..
-		Model m = rootNode.toRDF().getModel();
-		StmtIterator sit = m.listStatements(null, PT.parentTree, rootNode.toRDF());
-		Resource childPearl;
-		while (sit.hasNext()) {
-			// Save the reference..
-			childPearl = sit.nextStatement().getSubject();
-			
-			// Check if the pearl is a refPearl, if so, recursively follow:
-			if (childPearl.hasProperty(RDF.type, PT.RefPearl)) {
-				Statement newRoot;
-				if ((newRoot = childPearl.getProperty(RDFS.seeAlso)) != null ) {
-					// It is a reference or alias Pearl.
-					// Follow reference Pearls recursively..
-					_printTree(outps, Clam.makePearl(newRoot.getObject()), 
-							fieldDelimiter + levelPrefix, fieldDelimiter, entryMarker, expanded);
-				}
-			} else {
-				// Write the pearl to  
-				// It is a PagePearl or AliasPearl, get and Print the properties..
-				writePearl(outps, childPearl, levelPrefix, fieldDelimiter, entryMarker, expanded);
-			}
-		}
-	}
-	
-	// Write a pearl Resource to the specified output stream..
-	private static void writePearl(PrintStream outps, Resource pearl, 
-			String levelPrefix, String fieldDelimiter, String entryMarker, boolean expanded) {
-		
-		Statement title, identifier, inTreeSince;
-		title 		= pearl.getProperty(DC_11.title);
-		identifier  = (pearl.hasProperty(RDF.type, PT.AliasPearl)) ? 
-				pearl.getProperty(RDFS.seeAlso) : pearl.getProperty(DC_11.identifier);
-		inTreeSince = pearl.getProperty(PT.inTreeSince);
-		
-		// Print the property values..
-		if (expanded) {
-			outps.println(levelPrefix + fieldDelimiter + entryMarker + statementToPropObj(title));
-			outps.println(levelPrefix + fieldDelimiter + entryMarker + statementToPropObj(identifier));
-			outps.println(levelPrefix + fieldDelimiter + entryMarker + statementToPropObj(inTreeSince));
-			outps.println();
-		} else {
-			outps.print(levelPrefix);
-			outps.print(fieldDelimiter + statementToPropObj(title));
-			outps.print(fieldDelimiter + statementToPropObj(identifier));
-			outps.print(fieldDelimiter + statementToPropObj(inTreeSince));
-			outps.println();
-		}	
-	}
-	
-	
-	// Given a statement, return the predicate and the object..
-	private static String statementToPropObj(Statement s) {
-		return (s != null) ? 
-				s.getPredicate().getLocalName() + " : " + s.getObject().toString() : "";
-	}
-	
-	/**
-	 * Print the entire Pearltree in it its directory-like structure in an easy to view
-	 * format.
-	 * @param out
-	 */
-	public static void writePearlTree(OutputStream out, Pearl root) {
-		PrintStream outps = new PrintStream(out);
-		_printTree(outps, root, "", "\t","* ", true);
-	}
-	
-	/**
-	 * Write the Jena model representation of the Pearltrees data to the given 
-	 * OutputStream.
-	 * @param out
-	 */
-	public static void writeRAW(OutputStream out, Pearl p) {
-		p.toRDF().getModel().write(out);
-	}
-	
-	/**
-	 * Write the Jena model representation of the RDF data to standard out.
-	 */
-	public static void writeRAW(Pearl p) {
-		writeRAW(System.out, p);
-	}
-	
-	
-
-	/* * * 
-	 * Clams make Pearls, right?..
-	 */
-	protected static class Clam {
-		protected static Pearl makePearl(RDFNode resNode) {
-			Pearl p = null;
-			
-			// Construct the proper concrete type of Pearl..
-			if (resNode != null) {
-				Resource r = resNode.asResource();
-				if      (r.hasProperty(RDF.type, PT.RootPearl))
-					p = new RootPearl(resNode);
-				else if (r.hasProperty(RDF.type, PT.PagePearl)) 
-					p = new PagePearl(resNode);
-				else if (r.hasProperty(RDF.type, PT.RefPearl))
-					p = new RefPearl(resNode);
-				else if (r.hasProperty(RDF.type, PT.AliasPearl))
-					p = new AliasPearl(resNode);
-			}
-			return p;
+			if (pearl instanceof RefPearl)
+				climbPearlTree( ((RefPearl) pearl).getPearlTree(), ph);
 		}
 	}
 	
@@ -291,227 +140,49 @@ public class Pearltrees {
 		public void onPearl(PagePearl pagePearl) {}
 		public void onPearl(RefPearl refPearl) {}
 		public void onPearl(AliasPearl aliasPearl) {}
+	}
 
-		public void onNote(Note note) {}
+	
+	
+	// ############### RDF/XML ################
+	
+	/*
+	 * Write the Jena model representation of the Pearltrees data to the given 
+	 * OutputStream.
+	 * @param out
+	 */
+	public static void writeRAW(OutputStream out, Pearl p) {
+		p.toRDF().getModel().write(out);
 	}
 	
+	/*
+	 * Write the Jena model representation of the RDF data to standard out.
+	 */
+	public static void writeRAW(Pearl p) {
+		writeRAW(System.out, p);
+	}
 	
-	public static TextPearlHandler getTextPearlHandler(OutputStream out, boolean recursive) {
+	/*
+	 * Print the namespaces used in the RDF/XML description of the pearlTree to
+	 * OutputStream out.
+	 * @param out Stream to write to.
+	 */
+	protected static void listNameSpaces(OutputStream out, PearlTree pt) {
+		Pearl p = pt.getRootPearl();
+		// Check to make sure the PearlTree has a root..
+		if (p == null)
+			return;
+		Model m = p.toRDF().getModel();
+		// Get the map so we can print the values AND the keys.
+		Map<String, String> preMap = m.getNsPrefixMap();
+		Iterator<String> it = preMap.keySet().iterator();
+		String key;
 		PrintStream outps = new PrintStream(out);
-		return recursive ? new RecursiveTextPearlHandler(outps) : new TextPearlHandler(outps);
+		while (it.hasNext()) {
+			key = it.next();
+			outps.println(String.format("%10s : %s", key, preMap.get(key)));
+		}
 	}
 	
-	public static class TextPearlHandler extends DefaultPearlHandler {
-		
-		private PrintStream outps;
-		private String prefix		= "";
-		private String prefixInc	= "\t";
-		private String pearlPrefix 	= "*";
-		private String rootPrefix	= "#";
-		private String aliasPrefix	= "@";
-		private String refPrefix	= ">";
-		
-		TextPearlHandler(PrintStream outputStream) {
-			this.outps = outputStream;
-		}
-		
-		TextPearlHandler(PrintStream outputStream, String prefix) {
-			this(outputStream);
-			this.prefix = prefix;
-
-		}
-		
-		TextPearlHandler(PrintStream outputStream, String prefix, 
-				String pearlPrefix, String rootPrefix, String aliasPrefix, String refPrefix) {
-			this(outputStream, prefix);
-			this.pearlPrefix 	= pearlPrefix;
-			this.rootPrefix 	= rootPrefix;
-			this.aliasPrefix	= aliasPrefix;
-			this.refPrefix 		= refPrefix;
-			
-		}
-		
-		TextPearlHandler(PrintStream outputStream, String prefix, String prefixInc,
-				String pearlPrefix, String rootPrefix, String aliasPrefix, String refPrefix) {
-			this(outputStream, prefix, pearlPrefix, rootPrefix, aliasPrefix, refPrefix);
-			this.prefixInc 	= prefixInc; 
-			
-		}
-		
-		
-		@Override
-		public void onPearl(RootPearl rootPearl) {
-			outps.println(prefix + rootPrefix + " " + rootPearl.getTitle());
-		}
-		
-		@Override
-		public void onPearl(PagePearl pagePearl) {
-			outps.println(prefix + prefixInc + pearlPrefix + " " + pagePearl.getTitle());
-		}
-		
-		@Override
-		public void onPearl(AliasPearl aliasPearl) {
-			outps.println(prefix + prefixInc + aliasPrefix + " " + aliasPearl.getTitle());
-		}
-		
-		@Override
-		public void onPearl(RefPearl refPearl) {
-			outps.println(prefix + prefixInc + refPrefix + " " + refPearl.getTitle());
-		}
-		
-		// TODO: add notes..
-	}
-	
-	public static class RecursiveTextPearlHandler extends TextPearlHandler {
-		
-
-		RecursiveTextPearlHandler(PrintStream outputStream) {
-			super(outputStream);
-		}
-		
-		RecursiveTextPearlHandler(PrintStream outputStream, String prefix) {
-			super(outputStream, prefix);
-
-		}
-		
-		RecursiveTextPearlHandler(PrintStream outputStream, String prefix, 
-				String pearlPrefix, String rootPrefix, String aliasPrefix, String refPrefix) {
-			super(outputStream, prefix, pearlPrefix, rootPrefix, aliasPrefix, refPrefix);
-			
-		}
-		
-		RecursiveTextPearlHandler(PrintStream outputStream, String prefix, String prefixInc,
-				String pearlPrefix, String rootPrefix, String aliasPrefix, String refPrefix) {
-			super(outputStream, prefix, prefixInc, pearlPrefix, rootPrefix, aliasPrefix, refPrefix);
-			
-		}
-		
-		@Override
-		public void onPearl(RefPearl refPearl) {
-			for (Pearl p : refPearl.getPearlTree().getTreePearls()) {
-				p.accept(new RecursiveTextPearlHandler(super.outps, 
-						super.prefix + super.prefixInc, super.prefixInc, super.pearlPrefix,
-						super.rootPrefix, super.aliasPrefix, super.refPrefix));
-			}
-		}
-	}  // RecursiveTextPearlHandler
-	
-	
-	public static FileSystemPearlHandler getFileSystemPearlHandler(String path, boolean recursive) {
-		return recursive ? new RecursiveFileSystemPearlHandler(path) : new FileSystemPearlHandler(path);
-	}
-	
-	public static FileSystemPearlHandler getFileSystemPearlHandler(boolean recursive) {
-		return getFileSystemPearlHandler(new String(), recursive);
-	}
-	
-	/**
-	 * TODO: Document..
-	 * @author David
-	 *
-	 */
-	public static class FileSystemPearlHandler implements PearlHandler {
-
-		private File currentDir;
-		
-		public FileSystemPearlHandler() {
-			this(new String());
-		}
-		public FileSystemPearlHandler(String outputDirectory) {
-			currentDir = new File(outputDirectory);
-			currentDir.mkdirs();
-			
-		}
-		
-		@Override
-		public void onPearl(RootPearl rootPearl) {
-			String dirName = rootPearl.getTitle();
-			File dir = new File(currentDir, dirName);
-			dir.mkdir();
-			currentDir = dir;
-		}
-
-		@Override
-		public void onPearl(PagePearl pagePearl) {
-			String fileName = pagePearl.getTitle();
-			File pFile = new File(currentDir, fileName);
-			OutputStream o = null;
-			try {
-				o = new FileOutputStream(pFile);
-				o.write(pagePearl.getPageURLstr().getBytes());
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
-		}
-
-		@Override
-		public void onPearl(AliasPearl aliasPearl) {
-			String fileName = aliasPearl.getTitle();
-			File pFile = new File(currentDir, fileName);
-			OutputStream o = null;
-			try {
-				o = new FileOutputStream(pFile);
-				o.write(aliasPearl.getPearlURI().getBytes());
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
-			
-		}
-
-		@Override
-		public void onPearl(RefPearl refPearl) {
-			String fileName = refPearl.getTitle();
-			File pFile = new File(currentDir, fileName);
-			OutputStream o = null;
-			try {
-				o = new FileOutputStream(pFile);
-				o.write(refPearl.getPearlURI().getBytes());
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
-			
-		}
-
-		@Override
-		public void onNote(Note note) {
-			PrintWriter p;
-			try {
-				p = new PrintWriter(new FileOutputStream(note.getParentPearl().toString(), true));
-				p.println();
-				p.println(note.getCreator());
-				p.println(note.getDate());
-				p.println(note.getText());
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
-		}
-	}// FileSystemPearlHandler
-	
-	/**
-	 * TODO: Document..
-	 * @author David
-	 *
-	 */
-	public static class RecursiveFileSystemPearlHandler extends FileSystemPearlHandler {
-		
-		public RecursiveFileSystemPearlHandler(String outputDirectory) {
-			super(outputDirectory);
-		}
-		
-		public RecursiveFileSystemPearlHandler() {
-			super(new String());
-		}
-		
-		@Override
-		public void onPearl(RefPearl refPearl) {
-			RecursiveFileSystemPearlHandler rfsph = 
-					new RecursiveFileSystemPearlHandler(
-							super.currentDir.getParentFile().getPath());
-			
-			for (Pearl p : refPearl.getPearlTree().getTreePearls()) {
-				p.accept(rfsph);
-			}	
-		}	
-	} // RecursiveFilesystemPearlHandler
 	
 }// Pearltrees

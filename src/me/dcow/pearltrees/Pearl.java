@@ -35,12 +35,15 @@ public abstract class Pearl extends PTNode implements Comparable<Pearl> {
 	}
 	
 	public String getType() {
-		return pData.getProperty(RDF.type).getString();
+		return pData.getPropertyResourceValue(RDF.type).getLocalName();
 	}
 	
 	public NoteIterator getNotes() {
 		return new NoteItrRes(pData.getModel().listResourcesWithProperty(PT.Tree, getURI()));
 	}
+	
+	// Visitor method..
+	abstract protected void accept(PearlHandler ph);
 	
 	@Override
 	public int compareTo(Pearl o) {
