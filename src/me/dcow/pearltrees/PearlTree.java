@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import me.dcow.pearltrees.vocabulary.PT;
+
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;

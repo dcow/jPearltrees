@@ -2,7 +2,7 @@ package me.dcow.pearltrees;
 
 import com.hp.hpl.jena.rdf.model.ResIterator;
 
-public class NoteItrRes implements NoteIterator {
+class NoteItrRes implements NoteIterator {
 
 	ResIterator it;
 	

@@ -2,7 +2,7 @@ package me.dcow.pearltrees;
 
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
-public class PearlItrStmt implements PearlIterator {
+class PearlItrStmt implements PearlIterator {
 
 	StmtIterator sit;
 	

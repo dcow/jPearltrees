@@ -3,7 +3,7 @@ package me.dcow.pearltrees;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-public class PearlItrList implements PearlIterator{
+class PearlItrList implements PearlIterator{
 
 	Iterator<? extends Pearl> it;
 	

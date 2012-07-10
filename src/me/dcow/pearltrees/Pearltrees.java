@@ -6,6 +6,9 @@ import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.Map;
 
+import me.dcow.pearltrees.TextPearlHandler.RecursiveTextPearlHandler;
+import me.dcow.pearltrees.vocabulary.PT;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -114,6 +117,21 @@ public class Pearltrees {
 		public void onPearl(AliasPearl aliasPearl) {}
 	}
 
+	
+	public static TextPearlHandler getTextPearlHandler(OutputStream out, boolean recursive) {
+		PrintStream outps = new PrintStream(out);
+		return recursive ? new RecursiveTextPearlHandler(outps) : new TextPearlHandler(outps);
+	}
+	
+	public static PearlHandler getCSVTextPearlHandler(OutputStream out, boolean recursive) {
+		PrintStream outPS = new PrintStream(out);
+		return recursive ? 
+			new RecursiveTextPearlHandler(outPS, new String(), ",", new String(), 
+			new String(), new String(), new String()) 
+		:
+			new TextPearlHandler(outPS, new String(), ",", new String(), 
+			new String(), new String(), new String());
+	}
 	
 	
 	// ############### RDF/XML ################

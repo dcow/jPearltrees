@@ -1,4 +1,4 @@
-package me.dcow.pearltrees;
+package me.dcow.pearltrees.vocabulary;
 
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;

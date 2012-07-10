@@ -1,5 +1,7 @@
 package me.dcow.pearltrees;
 
+import me.dcow.pearltrees.vocabulary.PT;
+
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
 public class RootPearl extends Pearl {
