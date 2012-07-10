@@ -43,7 +43,7 @@ public class PearlTree {
 		
 		Pearl pearl;
 		while(rit.hasNext()) {
-			pearl = Pearltrees.Clam.makePearl(rit.nextResource());
+			pearl = Clam.makePearl(rit.nextResource());
 			ptPearls.add(pearl);
 		}
 		
@@ -52,6 +52,7 @@ public class PearlTree {
 	protected PearlTree(RDFNode rootNode) {
 		this(rootNode.asResource());
 	}
+
 	
 	/**
 	 * Return the RootPearl which represents the root of the PearlTree.

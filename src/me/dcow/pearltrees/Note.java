@@ -1,7 +1,5 @@
 package me.dcow.pearltrees;
 
-import me.dcow.pearltrees.Pearltrees.Clam;
-
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.vocabulary.DC_11;
 
