@@ -33,13 +33,13 @@ is backed by an Apache Jena RDF _Model_ class.
 Beyond setup, usage is simple:
 
 ```java
-    // Construct a Pearltree..
-    Pearltree pt = Pearltrees.buildPearlTrees("pearltrees_export.rdf")
+// Construct a Pearltree..
+Pearltree pt = Pearltrees.buildPearlTrees("pearltrees_export.rdf")
  
-    // Print a pretty version folling using a handler that follows 
-    // RefPearls recursively..
-    Pearltrees.traversePearlTree(pt, 
-        Pearltrees.getTextPearlHandler(System.out, true));
+// Print a pretty version folling using a handler that follows 
+// RefPearls recursively..
+Pearltrees.traversePearlTree(pt, 
+    Pearltrees.getTextPearlHandler(System.out, true));
 ```
 
 __Default TextPearlHandler output:__
