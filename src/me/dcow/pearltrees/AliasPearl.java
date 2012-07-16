@@ -28,7 +28,7 @@ public class AliasPearl extends Pearl {
 		return pData.getPropertyResourceValue(RDFS.seeAlso).getURI();
 	}
 
-	protected void accept(PearlHandler ph) {
+	public void accept(PearlHandler ph) {
 		ph.onPearl(this);
 	}	
 }

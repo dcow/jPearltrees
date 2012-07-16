@@ -14,7 +14,7 @@ public class RootPearl extends Pearl {
 		return new PearlItrStmt(pData.getModel().listStatements(null, PT.parentTree, pData));
 	}
 	
-	protected void accept(PearlHandler ph) {
+	public void accept(PearlHandler ph) {
 		ph.onPearl(this);
 	}
 }

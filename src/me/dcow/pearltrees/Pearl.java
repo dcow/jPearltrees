@@ -45,7 +45,13 @@ public abstract class Pearl extends PTNode implements Comparable<Pearl> {
 	}
 	
 	// Visitor method..
-	abstract protected void accept(PearlHandler ph);
+	/**
+	 * This method is called when you want an implementing Pearl's
+	 * callback method in the PearlHandler to be called on this
+	 * pearl.
+	 * @param ph PearlHandler implementing a concrete pearl callback.
+	 */
+	abstract public void accept(PearlHandler ph);
 	
 	@Override
 	public int compareTo(Pearl o) {

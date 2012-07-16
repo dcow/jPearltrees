@@ -49,7 +49,7 @@ public class PagePearl extends Pearl {
 		return url;
 	}
 	
-	protected void accept(PearlHandler ph) {
+	public void accept(PearlHandler ph) {
 		ph.onPearl(this);
 	}
 }
