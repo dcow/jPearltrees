@@ -34,7 +34,7 @@ Beyond setup, usage is simple:
 
 ```java
     // Construct a Pearltree..
-    Pearltree pt = Pearltrees.buildPearlTrees("pearltrees_export.rdf)
+    Pearltree pt = Pearltrees.buildPearlTrees("pearltrees_export.rdf")
  
     // Print a pretty version folling using a handler that follows 
     // RefPearls recursively..
