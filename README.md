@@ -41,6 +41,7 @@ Beyond setup, usage is simple:
     Pearltrees.traversePearlTree(pt, getTextPearlHandler(System.out, true));
 ```
 
+__Default TextPearlHandler output:__
 <pre>
 # dcow's drop zone
     # Education
