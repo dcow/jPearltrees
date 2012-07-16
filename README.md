@@ -38,7 +38,8 @@ Beyond setup, usage is simple:
  
     // Print a pretty version folling using a handler that follows 
     // RefPearls recursively..
-    Pearltrees.traversePearlTree(pt, getTextPearlHandler(System.out, true));
+    Pearltrees.traversePearlTree(pt, 
+        Pearltrees.getTextPearlHandler(System.out, true));
 ```
 
 __Default TextPearlHandler output:__
@@ -147,6 +148,7 @@ PearlHandler ph = new PearlHandler() {
     }
 }
     
+// Each Pearl passes itself to the handler's callback..
 List<Pearl> treePearls = pt.getTreePearls();
 for(Pearl pearl : treePearls) {
     pearl.accept(ph);    
