@@ -116,12 +116,15 @@ Beyond setup, usage is simple:
 
 ```java
 // Print a subtree..
-List<Pearl> treePearls = pt.getTreePearls();
-for (Pearl pearl : treePearls) {
+PearlIterator pit = pt.listTreePearls();
+while (pit.hasNext()) {
    	// Access Pearl data
-    String name = child.getName();
-    String url  = child.getURL();
-    String date = child.getDateInserted();
+    Pearl p = pit.nextPearl
+    System.out.println( p.getTitle() + 
+                        " : " + 
+                        p.getEntryDate());
+
+    NoteIterator nit = p.getNotes();
     ...
 }
 
