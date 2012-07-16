@@ -158,3 +158,10 @@ for(Pearl pearl : treePearls) {
 -------------------
 
 ## More coming.. ##
+
+* Database Model support
+* Read from multiple exports
+* Write to database
+* Incorporate more design by contract ideas
+* Tests
+* User, account, and full notes support
