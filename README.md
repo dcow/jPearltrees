@@ -132,22 +132,24 @@ while (pit.hasNext()) {
 }
 
 // Use your own handler..
-treePearls = pt.getTreePearls();
+PearlHandler ph = new PearlHandler() {
+    public onPearl(RootPearl rootPearl) {
+        // Do Something with rootPearl..
+    }
+    public onPearl(PagePearl pagePearl) {
+        // Do something with pagePearl..
+    }
+    public onPearl(AliasPearl aliasPearl) {
+        // Do Something with aliasPearl..
+    }
+    public onPearl(RefPearl refPearl) {
+        // Do something with refPearl..
+    }
+}
+    
+List<Pearl> treePearls = pt.getTreePearls();
 for(Pearl pearl : treePearls) {
-    pearl.accept(new PearlHandler() {
-        public onPearl(RootPearl rootPearl) {
-            // Do Something with rootPearl..
-        }
-        public onPearl(PagePearl pagePearl) {
-            // Do something with pagePearl..
-        }
-        public onPearl(AliasPearl aliasPearl) {
-            // Do Something with aliasPearl..
-        }
-        public onPearl(RefPearl refPearl) {
-            // Do something with refPearl..
-        }
-    });    
+    pearl.accept(ph);    
 }
 
 ```
