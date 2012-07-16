@@ -25,8 +25,7 @@ containted within a *PearlTree*.
 ## Usage ##
 
 jPearltrees is still in development.  To use it right now, you
-need (at least) the [Jena 2.7.2](https://repository.apache.org/
-content/repositories/releases/org/apache/jena/jena-core/) 
+need (at least) the [Jena 2.7.2](http://jena.apache.org/download/index.html) 
 libraries on your classpath.  jPearltrees
 is backed by an Apache Jena RDF _Model_ class.  
 
