@@ -115,6 +115,8 @@ __Default TextPearlHandler output:__
 >            ...
 </pre>
 
+__More usage:__
+
 ```java
 // Print a subtree..
 PearlIterator pit = pt.listTreePearls();
