@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>jPearltrees by dcow</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>jPearltrees</h1>
+        <p>Java Pearltrees RDF/XML data interface.</p>
+
+        <p class="view"><a href="https://github.com/dcow/jPearltrees">View the Project on GitHub <small>dcow/jPearltrees</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/dcow/jPearltrees/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/dcow/jPearltrees/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/dcow/jPearltrees">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>jPearltrees Java Library</h1>
+
+<p>Author: David Cowden</p>
+
+<h2>Purpose</h2>
+
+<p>jPearltrees is a Java library that provides an interface for 
+handling the <em>RDF/XML</em> data exported from a 
+<a href="http://www.pearltrees.com">Pearltrees</a> account.</p>
+
+<p><em>Pearltrees</em> is an individualy managed data-curation system with
+support for teams and collaboration.  Pearltrees lets you organize
+categorical data into trees and provides convenient methods
+for further data curation.</p>
+
+<p>As the owner of all the data in your Pearltrees account, you
+can export your entire collection in an <em>RDF/XML</em> format.
+jPearltrees adapts the <em>RDF/XML</em> structure back into the natural 
+tree structure and provides methods for accessing the data
+containted within a <em>PearlTree</em>.</p>
+
+<h2>Usage</h2>
+
+<p>jPearltrees is still in development.  To use it right now, you
+need (at least) the <a href="http://jena.apache.org/download/index.html">Jena 2.7.2</a> 
+libraries on your classpath.  jPearltrees
+is backed by an Apache Jena RDF <em>Model</em> class.  </p>
+
+<p>Beyond setup, usage is simple:</p>
+
+<div class="highlight">
+<pre><span class="c1">// Construct a Pearltree..</span>
+<span class="n">Pearltree</span> <span class="n">pt</span> <span class="o">=</span> <span class="n">Pearltrees</span><span class="o">.</span><span class="na">buildPearlTrees</span><span class="o">(</span><span class="s">"pearltrees_export.rdf"</span><span class="o">)</span>
+
+<span class="c1">// Print a pretty version using a handler that follows </span>
+<span class="c1">// RefPearls recursively..</span>
+<span class="n">Pearltrees</span><span class="o">.</span><span class="na">traversePearlTree</span><span class="o">(</span><span class="n">pt</span><span class="o">,</span> 
+    <span class="n">Pearltrees</span><span class="o">.</span><span class="na">getTextPearlHandler</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+</pre>
+</div>
+
+
+<p><strong>Default TextPearlHandler output:</strong></p>
+
+<pre>
+# dcow's drop zone
+    # Education
+        # Evolving_Critique
+            * Science education myths that keep us from fixing the system
+            * Codecademy: Next Frontier In Digital Education Movement
+            * Public schools: Choose your own misadventure
+        @ Gamify Your Lessons
+        # GamificationofEdu
+            * How to teach history (and lots more) with Minecraft
+            * 3 Social Learning Trends to Watch in 2012 : Innovation
+            * Summit on Science, Entertainment, and Education - Will Wright on Vimeo
+        # MinorityandWomenEdu
+            * Study aims to learn why some black men succeed in college
+            * Female Geeks Flex Their Skills At Ladies-Only Hackathon
+            * Why women should pick science &amp; math degrees over liberal arts
+        # SoftwareEdu
+            * Mentorship From Silicon Valley Techies Encourages High School Girls To Dream Bigger
+            * Computer Programming for All: A New Standard of Literacy
+            * How Codecademy got so hot, so fast
+            * Developer's Night | a tidal force
+            * Absolutely amazing: 6th grade iPhone app developer speaks at TEDx
+            * Apple's plan to get its products in schools? Educate the educators.
+            * Empirical Software Engineering
+    # Immersive_VR_Gaming_LifeLearn_Social
+        # Immersive Learning
+        # face recognition
+            * FREE Face Recognition API, Face Recognition Software Apps for the masses – face.com
+            * Google's Artificial Brain Learns to Find Cat Videos | Wired Science
+            * Apple Patent Describes a More Secure Face-Recognition System | Gadget Lab
+        # immersivesmartdevices
+            * Microsoft: We're Still Building HomeOS
+            * Smart bed makes itself after you roll out of the sack | Digital Trends
+            * This Android Alarm Only Deactivates When You are Out of Bed
+            * New GE refrigerators will recognize when to stop filling containers with water
+            * Wallpaper That Blocks Wi-Fi - Ideas Market
+        # NewFormsofInteraction
+            * Xbox 'Power Glove' Offers Precise, Kinect-Like Gesture Control | Gadget Lab
+            * Microsoft Demos Super Fast Touchscreen Display
+            * Leap Motion
+            * The Story of 'Pah!', The Voice-Controlled Mobile Game
+            * Mattel plans to make ‘Back to the Future’ hover boards
+            * Apple introduces us to the Wild World of Coded Magnets
+            # Kinect
+                * Kinect-based mood analysis could bolster Microsoft's advertising efforts | Digital Trends
+                * Kinect-enabled Kreek interface uses a flexible surface for added depth
+                * Kinect used for holographic 3D video conferencing
+                * Whole Foods Debuts Kinect-Powered Shopping Carts [VIDEO]
+                * Use Kinect to teach anatomy? It's a 'Mirracle'! | Health Tech
+                * Kinect for Windows adds seated skeletal tracking
+                * More Mind-Blowing Real-World Kinect Interaction From Microsoft Research
+            * Synaptics Demonstrates Windows 8 Trackpad Gestures On Video
+            * A Brief Rant on the Future of Interaction Design
+            * Stop and Start Your Music With Hand Gestures
+        # e-books
+            * Should College Students Be Forced To Buy E-Books?
+            * How My Book Became A (Self-Published) Best Seller
+            * Publishers Hustle to Make E-Books More Immersive | Underwire
+            * Are Enhanced E-Book Apps Worth It?
+            * Enhanced e-books: Truly moving literature
+            * 5 Things to Consider Before Self-Publishing Your Book
+            * New atlas app invites children to take the world for a spin
+        @ Gamify Your Lessons
+        # sensormonitoring
+            * Smart shirt recognizes your exercise movements, vibrates to correct body form | Digital Trends
+            * BMW Developing Handwriting Recognition, Gesture Controls | Autopia
+            * The Shoe of Tomorrow Knows How Hard You Hustle | Playbook
+            * Police Investigate High School Coach's Handling of Player Concussions
+            * TinyDB: A Declarative Database for Sensor Networks
+        # AdvanceLightPhotography
+&gt;            ...
+</pre>
+
+<p><strong>More usage:</strong></p>
+
+<div class="highlight">
+<pre><span class="c1">// Print a subtree..</span>
+<span class="n">PearlIterator</span> <span class="n">pit</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="na">listTreePearls</span><span class="o">();</span>
+<span class="k">while</span> <span class="o">(</span><span class="n">pit</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+    <span class="c1">// Access Pearl data</span>
+    <span class="n">Pearl</span> <span class="n">p</span> <span class="o">=</span> <span class="n">pit</span><span class="o">.</span><span class="na">nextPearl</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span> <span class="n">p</span><span class="o">.</span><span class="na">getTitle</span><span class="o">()</span> <span class="o">+</span> 
+                        <span class="s">" : "</span> <span class="o">+</span> 
+                        <span class="n">p</span><span class="o">.</span><span class="na">getEntryDate</span><span class="o">());</span>
+
+    <span class="n">NoteIterator</span> <span class="n">nit</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">getNotes</span><span class="o">();</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+
+<span class="c1">// Use your own handler..</span>
+<span class="n">PearlHandler</span> <span class="n">ph</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PearlHandler</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">onPearl</span><span class="o">(</span><span class="n">RootPearl</span> <span class="n">rootPearl</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// Do Something with rootPearl..</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">onPearl</span><span class="o">(</span><span class="n">PagePearl</span> <span class="n">pagePearl</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// Do something with pagePearl..</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">onPearl</span><span class="o">(</span><span class="n">AliasPearl</span> <span class="n">aliasPearl</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// Do Something with aliasPearl..</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">onPearl</span><span class="o">(</span><span class="n">RefPearl</span> <span class="n">refPearl</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// Do something with refPearl..</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// Each Pearl passes itself to the handler's callback..</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Pearl</span><span class="o">&gt;</span> <span class="n">treePearls</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="na">getTreePearls</span><span class="o">();</span>
+<span class="k">for</span><span class="o">(</span><span class="n">Pearl</span> <span class="n">pearl</span> <span class="o">:</span> <span class="n">treePearls</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">pearl</span><span class="o">.</span><span class="na">accept</span><span class="o">(</span><span class="n">ph</span><span class="o">);</span>    
+<span class="o">}</span>
+
+</pre>
+</div>
+
+
+<hr><h2>More coming..</h2>
+
+<ul>
+<li>Database Model support</li>
+<li>Read from multiple exports</li>
+<li>Write to database</li>
+<li>Incorporate more design by contract ideas</li>
+<li>Tests</li>
+<li>User, account, and full notes support</li>
+</ul><hr><h2>License</h2>
+
+<pre>
+ Copyright 2012 David Cowden : dcow90 [at] gmail.com
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+</pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/dcow">dcow</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
